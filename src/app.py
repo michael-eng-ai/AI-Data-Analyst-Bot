@@ -47,7 +47,7 @@ def setup_agent():
     )
     
     # DB connection (Local SQLite for V1)
-    db_uri = f"sqlite:///data/ecommerce_dummy.db"
+    db_uri = "sqlite:///data/ecommerce_dummy.db"
     db = init_db_connection(db_uri)
     
     # Create Agents

@@ -6,7 +6,6 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent as langchain_create_sql_agent
 from langchain.agents.agent_types import AgentType
-import os
 
 def init_db_connection(db_uri: str) -> SQLDatabase:
     """Initializes the SQLAlchemy connection via Langchain SQLDatabase."""
