@@ -1,0 +1,8 @@
+langchain>=0.1.0
+langchain-google-genai>=0.0.9
+langchain-community>=0.0.20
+streamlit>=1.31.0
+google-cloud-bigquery>=3.17.0
+sqlalchemy>=2.0.27
+sqlalchemy-bigquery>=1.9.0
+python-dotenv>=1.0.1
