@@ -1,9 +1,11 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
+from langchain_core.messages import HumanMessage
 
 # Import our custom agent functions
 from agent.sql_agent import init_db_connection, create_sql_agent
+from agent.rag_agent import create_rag_chain
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 load_dotenv()
@@ -48,11 +50,14 @@ def setup_agent():
     db_uri = f"sqlite:///data/ecommerce_dummy.db"
     db = init_db_connection(db_uri)
     
-    # Create Agent
-    return create_sql_agent(db, llm)
+    # Create Agents
+    sql_agent = create_sql_agent(db, llm)
+    rag_agent = create_rag_chain(llm)
+    
+    return sql_agent, rag_agent, llm
 
 try:
-    sql_agent = setup_agent()
+    sql_agent, rag_agent, routing_llm = setup_agent()
 except Exception as e:
     st.error(f"Erro ao inicializar o agente: {e}")
     st.stop()
@@ -75,18 +80,35 @@ if prompt := st.chat_input("Pergunte algo ao seu Banco de Dados..."):
 
     # Agent Response placeholder
     with st.chat_message("assistant"):
-        with st.spinner("Analisando o banco de dados e gerando a query SQL..."):
+        with st.spinner("Pensando e escolhendo a melhor fonte de dados..."):
             try:
-                # TODO: Implement Semantic Router here later for RAG vs SQL
-                # Currently hardcoded to SQL Agent
-                response = sql_agent.invoke({"input": prompt})
-                output_text = response.get("output", "Desculpe, não consegui gerar uma resposta.")
+                # Semantic Router Logic
+                routing_prompt = f"""
+                Analise a pergunta do usuário: '{prompt}'
+                Decida se a resposta exige consultar um 'BANCO_DE_DADOS' (perguntas quantitativas, cálculos, tabelas, vendas, faturamento) 
+                ou consultar a 'DOCUMENTACAO' (perguntas qualitativas, conceitos teóricos, regras de negócio, glossários).
+                Responda APENAS com a palavra: BANCO_DE_DADOS ou DOCUMENTACAO.
+                """
+                
+                route_decision = routing_llm.invoke([HumanMessage(content=routing_prompt)]).content.strip()
+                
+                if "DOCUMENTACAO" in route_decision.upper():
+                    # Call RAG Agent
+                    st.info("🧠 Pesquisando nas Documentações Oficiais (RAG)...")
+                    response = rag_agent.invoke({"input": prompt})
+                    output_text = response.get("answer", "Desculpe, não encontrei na documentação.")
+                else:
+                    # Call SQL Agent
+                    st.info("📊 Consultando o Banco de Dados (Text-to-SQL)...")
+                    response = sql_agent.invoke({"input": prompt})
+                    output_text = response.get("output", "Desculpe, não consegui executar no banco.")
+                
                 st.markdown(output_text)
                 
                 # Add assistant response to chat history
                 st.session_state.messages.append({"role": "assistant", "content": output_text})
             
             except Exception as e:
-                error_msg = f"Erro na execução da Query: {e}"
+                error_msg = f"Erro na execução da consulta: {e}"
                 st.error(error_msg)
                 st.session_state.messages.append({"role": "assistant", "content": error_msg})
