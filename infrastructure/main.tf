@@ -25,9 +25,9 @@ resource "google_project_service" "apis" {
 
 # Example BigQuery Dataset for the Agent to query
 resource "google_bigquery_dataset" "analytics_dataset" {
-  dataset_id                  = "ai_agent_dataset"
-  friendly_name               = "AI Agent Analytics Dataset"
-  description                 = "Dataset for the AI Data Analyst Agent to query"
-  location                    = var.region
-  delete_contents_on_destroy  = true
+  dataset_id                 = "ai_agent_dataset"
+  friendly_name              = "AI Agent Analytics Dataset"
+  description                = "Dataset for the AI Data Analyst Agent to query"
+  location                   = var.region
+  delete_contents_on_destroy = true
 }
