@@ -37,5 +37,13 @@ jobs:
       run: terraform init
     - name: Terraform Format
       run: terraform fmt -check
+    
+    # Mock GCP credentials for Terraform Plan in CI
+    - name: Create Mock GCP Credentials
+      run: |
+        echo '{"client_id": "mock", "client_secret": "mock", "refresh_token": "mock", "type": "authorized_user"}' > $HOME/gcp-credentials.json
+    
     - name: Terraform Plan
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/../gcp-credentials.json
       run: terraform plan -var="project_id=fake-project-id" -no-color
