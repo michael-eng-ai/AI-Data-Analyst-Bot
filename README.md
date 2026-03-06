@@ -1,29 +1,30 @@
-# 🤖 AI Data Analyst Bot
+# AI Data Analyst Bot
 
 **Project 5 from the Cloud Strategy Portfolio.**
 
-An intelligent agent that acts as a Data Analyst, utilizing Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) to query Data Warehouses and company documentation using natural language.
+An intelligent agent that acts as a Data Analyst, utilizing Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) to query Data Warehouses and company documentation using natural language processing interfaces.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
-This project implements a hybrid **Text-to-SQL + RAG** pipeline:
-1. **Semantic Routing:** Learns the intent of the user's question.
-2. **Text-to-SQL:** If it's a quantitative question, it generates a strict SQL Query and executes it against Google BigQuery.
-3. **Advanced RAG:** If it's a qualitative question, it searches the Vector Database (Pinecone) containing business glossaries and metrics documentation.
-4. **Token Optimization:** Uses local embeddings and summary truncation to save costly LLM tokens.
+This project implements a hybrid Text-to-SQL + RAG pipeline designed for structural accuracy and hallucination prevention:
+1. **Semantic Routing:** Analyzes user intent to determine required analytical actions.
+2. **Text-to-SQL Conversion:** Processes quantitative prompts to generate strict SQL Queries, executing them autonomously against Google BigQuery instances.
+3. **Advanced Retrieval-Augmented Generation (RAG):** Manages qualitative requests by searching the target Vector Database (Pinecone). It correlates established business glossaries and metrics definition documentation.
+4. **Token Optimization Strategies:** Employs local embeddings and summary truncation mechanisms to constrain the computational token overhead required for external LLM evaluation loops.
 
-## 🚀 Tech Stack
+## Technical Stack Overview
 
-*   **Cloud:** Google Cloud Platform (BigQuery)
+*   **Cloud Infrastructure:** Google Cloud Platform (BigQuery)
 *   **Infrastructure as Code:** Terraform
-*   **CI/CD:** GitHub Actions
-*   **AI/LLM:** Google Gemini API / Groq
-*   **Orchestration:** LangChain / LangGraph
-*   **Frontend:** Streamlit
+*   **Continuous Integration/Delivery:** GitHub Actions
+*   **AI Models and Integration:** Google Gemini API / Groq
+*   **Agentic Orchestration Systems:** LangChain / LangGraph
+*   **Frontend Data Interface:** Streamlit
 
-## 💻 Local Setup
+## Local Execution and Environment Setup
+
 ```bash
 python -m venv venv
 source venv/bin/activate
