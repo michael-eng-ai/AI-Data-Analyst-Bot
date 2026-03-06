@@ -30,4 +30,10 @@ resource "google_bigquery_dataset" "analytics_dataset" {
   description                = "Dataset for the AI Data Analyst Agent to query"
   location                   = var.region
   delete_contents_on_destroy = true
+
+  labels = {
+    environment = "prod"
+    managed_by  = "terraform"
+    project     = "ai-data-analyst-bot"
+  }
 }
